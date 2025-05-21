@@ -4,7 +4,9 @@
 # ANÁLISIS DE REGRESIÓN LINEAL MÚLTIPLE
 # P. Agr. Ludwing Isaí Marroquín Jiménez
 
-# Base de datos: 
+# Base de datos: Trujillo Sierra, E. (2022). Modelo de Regresión 
+# Lineal Múltiple - Salinidad. RStudio Pubs. Recuperado de: 
+# https://rstudio-pubs-static.s3.amazonaws.com/940966_d007915418ef41c7874f7316aa972543.html
 
 # Repositorio Github Analisis:
 # https://github.com/Ludwing-MJ/Reg_multiple_EJ.git
@@ -14,9 +16,8 @@
 if(!require("DataExplorer")) install.packages(DataExplorer)
 if(!require("car")) install.packages(car)
 
-
 # Importar base de datos
-data <- read.csv("Advertising.csv", sep = ",")
+data <- read.csv("Biomasa.csv", sep = ";")
 
 # ANÁLISIS EXPLORATORIO DE LOS DATOS 
 # Revisar la estructura de la base de datos
@@ -28,30 +29,23 @@ plot_intro(data)
 
 # Elaboración de una matriz de correlaciones
 plot_correlation(data)
-# Observación: Se pueden identificar las variables que describen parcialmente
-# la variabilidad de la variable respuesta.
 
 # ANALISIS DE REGRESION LINEAL MULTIPLE
 # Uso de Attach para no colocar el signo de dolar para llamar las variables
 attach(data)
 # Elaborar un modelo empleando todas las variables como predictoras
-modelo_completo <- lm(sales ~ TV + radio + newspaper , data = data)
+modelo_completo <- lm(Biomasa ~ pH + Salinidad + Zinc + potasio, data = data)
 # Revisar el modelo
 summary(modelo_completo)
-# Observación tiene un coeficiente de determiancion alto (0.8956) y una
-# variable no tienen significancia (newspaper)
 
-# Aplicar stepwise (por defecto usa AIC como criterio)
-modelo_final <- step(modelo_completo, direction = "both")
+# Aplicar stepwise (BIC como criterio)
+modelo_final <- step(modelo_completo, direction = "both", k = log(nrow(data)))
 summary(modelo_final)
 
 # EVALUACIÓN DE LOS SUPUESTOS DEL MODELO FINAL
 
 # Evaluación de linealidad
 plot (modelo_final, 1) # Gráfico residuos vs predichos
-# Correlaicion entre cada varaible predictora y la variable respuesta
-cor.test(TV, sales) 
-cor.test(radio, sales)
 
 # Evaluacion de normalidad
 plot (modelo_final, 2) # Q-Q plot 
